@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 
 const scene = new THREE.Scene();
@@ -15,13 +15,14 @@ const renderer = new THREE.WebGLRenderer({canvas});
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-//geomtry
-const boxGeometry = new THREE.BoxGeometry( 3, 3, 3 )
-const boxMaterial = new THREE.MeshBasicMaterial( { color: 0xffff00, wireframe: false } );
-const box = new THREE.Mesh( boxGeometry, boxMaterial );
-box.castShadow = true;
-box.receiveShadow = false;
-scene.add( box );
+//sphere geomtry
+const sphereGeometry = new THREE.SphereGeometry( 5, 32, 32 );
+const sphereMaterial = new THREE.MeshStandardMaterial( { color: 0xff0000 } );
+const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+sphere.castShadow = true;
+sphere.receiveShadow = false;
+scene.add( sphere );
+
 
 //plane geometry
 const planeGeometry = new THREE.PlaneGeometry( 20, 20, 32, 32 );
@@ -30,8 +31,18 @@ const plane = new THREE.Mesh( planeGeometry, planeMaterial );
 plane.receiveShadow = true;
 scene.add( plane );
 
-//orbit
-const orbit = new OrbitControls(camera, renderer.domElement)
+//controls
+
+const controls = new ArcballControls( camera, renderer.domElement, scene );
+
+controls.addEventListener( 'change', function () {
+
+	renderer.render( scene, camera );
+
+} );
+
+camera.position.set( 0, 20, 100 );
+controls.update();
 
 //light
 const light = new THREE.DirectionalLight( 0xffffff, 1 );
@@ -39,15 +50,21 @@ light.position.set( 0, 1, 0 );
 light.castShadow = true;
 scene.add( light );
 
+light.shadow.mapSize.width = 512;
+light.shadow.mapSize.height = 512;
+light.shadow.camera.near = 0.5;
+light.shadow.camera.far = 500;
+
+
 //helper
-const helper = new THREE.CameraHelper( light.shadow.camera );
+const helper = new THREE.AxesHelper( 5 );
 scene.add( helper );
 
 function animate() {
 	requestAnimationFrame( animate );
 
-	box.rotation.x += 0.01;
-	box.rotation.y += 0.01;
+	plane.rotation.x += 0.06;
+    plane.rotation.y += 0.06;
 
 	renderer.render( scene, camera );
 }
