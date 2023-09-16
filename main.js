@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-
+import { ArcballControls } from 'three/addons/controls/ArcballControls.js';
 
 const scene = new THREE.Scene();
 
@@ -32,7 +31,6 @@ plane.receiveShadow = true;
 scene.add( plane );
 
 //controls
-
 const controls = new ArcballControls( camera, renderer.domElement, scene );
 
 controls.addEventListener( 'change', function () {
@@ -62,7 +60,7 @@ scene.add( helper );
 
 function animate() {
 	requestAnimationFrame( animate );
-
+    
 	plane.rotation.x += 0.06;
     plane.rotation.y += 0.06;
 
